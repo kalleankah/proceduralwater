@@ -47,24 +47,33 @@
   scene.add( plane2 );
   scene.add( plane3 );
   scene.add( plane4 );
-  // Box in the room
-  var geo_box = new THREE.BoxGeometry( 2, 2, 2 );
-  var mat_box = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
-  var box1 = new THREE.Mesh( geo_box, mat_box );
-  box1.position.y = 2;
-  box1.castShadow = true;
-  scene.add( box1 );
+  // // Box in the room
+  // var geo_box = new THREE.BoxGeometry( 2, 2, 2 );
+  // var mat_box = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
+  // var box1 = new THREE.Mesh( geo_box, mat_box );
+  // box1.position.y = 2;
+  // box1.castShadow = true;
+  // scene.add( box1 );
+  // box1.rotation.x += 0.02;
+  // box1.rotation.y += 0.01;
+
+  var geo_water = new THREE.PlaneGeometry( 6, 6, 128 );
+  var mat_water = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
+  var water = new THREE.Mesh( geo_water, mat_water );
+  water.position.y = 1;
+  water.rotation.x = -Math.PI/2;
+  water.castShadow = true;
+  scene.add( water );
 
   //Camera settings
   camera.position.z = 8;
-  camera.position.y = 12;
-  camera.rotation.x = -Math.PI/4;
+  camera.position.y = 5.5;
+  camera.rotation.x = -Math.PI/6;
 
   //Render loop
   var render = function () {
   requestAnimationFrame( render );
-  box1.rotation.x += 0.02;
-  box1.rotation.y += 0.01;
+  water.rotation.z += 0.01;
   renderer.render( scene, camera );
 };
 
