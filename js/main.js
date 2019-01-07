@@ -1,5 +1,8 @@
+  var start = Date.now();
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+  // Set up renderer
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth-1, window.innerHeight-1 );
   renderer.shadowMap.enabled = true;
@@ -57,8 +60,18 @@
   // box1.rotation.x += 0.02;
   // box1.rotation.y += 0.01;
 
-  var geo_water = new THREE.PlaneGeometry( 6, 6, 128 );
-  var mat_water = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
+  var geo_water = new THREE.PlaneGeometry( 16, 16, 128, 128 );
+  var mat_water = new THREE.ShaderMaterial( {
+    uniforms: {
+      time: {
+        type: "f",
+        value: 0.0
+      }
+    },
+    vertexShader: document.getElementById( 'vertexShader' ).textContent,
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+  } );
+
   var water = new THREE.Mesh( geo_water, mat_water );
   water.position.y = 1;
   water.rotation.x = -Math.PI/2;
@@ -72,9 +85,9 @@
 
   //Render loop
   var render = function () {
-  requestAnimationFrame( render );
-  water.rotation.z += 0.01;
-  renderer.render( scene, camera );
+    mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+    requestAnimationFrame( render );
+    renderer.render( scene, camera );
 };
 
 render();
