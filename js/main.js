@@ -1,11 +1,21 @@
+  var start = Date.now();
+
+  // Set up scene and camera
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth-1, window.innerHeight-1 );
+
+  // Set up renderer
+  //var renderer = new THREE.WebGLRenderer({antialias: true});
+var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
   renderer.shadowMap.enabled = true;
   renderer.shadowMapSoft = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   document.body.appendChild( renderer.domElement );
+
+  // canvas resize with window function
+  // windowresize author: https://github.com/jeromeetienne/threex.windowresize
+  var winResize	= new THREEx.WindowResize(renderer, camera);
 
   // Light settings
   var light = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -47,18 +57,32 @@
   scene.add( plane2 );
   scene.add( plane3 );
   scene.add( plane4 );
-  // // Box in the room
-  // var geo_box = new THREE.BoxGeometry( 2, 2, 2 );
-  // var mat_box = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
-  // var box1 = new THREE.Mesh( geo_box, mat_box );
-  // box1.position.y = 2;
-  // box1.castShadow = true;
-  // scene.add( box1 );
-  // box1.rotation.x += 0.02;
-  // box1.rotation.y += 0.01;
 
-  var geo_water = new THREE.PlaneGeometry( 6, 6, 128 );
-  var mat_water = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
+  // Create the water; geometry, material and mesh
+  // var geo_water = new THREE.PlaneGeometry( 16, 16, 128, 128 );
+  // var mat_water = new THREE.ShaderMaterial( {
+  //   uniforms: {
+      // time: {
+      //   type: "f",
+      //   value: 0.0
+      // }
+  //   },
+  //   vertexShader: document.getElementById( 'vertexShader' ).textContent,
+  //   fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+  //   lights: true
+  // } );
+
+  var geo_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
+  var mat_water = new THREE.ShaderMaterial( {
+    uniforms:{
+      time: { type: "f", value: 0.0 },
+      lightPos: {type: "vec3", value: light.position},
+      eyePos: {type: "vec3", value: camera.position}
+    },
+    vertexShader: document.getElementById( 'vertexShader' ).textContent,
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+  } );
+
   var water = new THREE.Mesh( geo_water, mat_water );
   water.position.y = 1;
   water.rotation.x = -Math.PI/2;
@@ -72,9 +96,13 @@
 
   //Render loop
   var render = function () {
-  requestAnimationFrame( render );
-  water.rotation.z += 0.01;
-  renderer.render( scene, camera );
+    mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+
+    //Set maximum framerate
+    setTimeout( function() {
+      requestAnimationFrame( render );
+    }, 1000 / 15);
+    renderer.render( scene, camera );
 };
 
 render();
