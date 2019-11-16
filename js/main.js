@@ -1,14 +1,21 @@
   var start = Date.now();
+
+  // Set up scene and camera
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
   // Set up renderer
-  var renderer = new THREE.WebGLRenderer();
+  //var renderer = new THREE.WebGLRenderer({antialias: true});
+var renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
   renderer.shadowMap.enabled = true;
   renderer.shadowMapSoft = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   document.body.appendChild( renderer.domElement );
+
+  // canvas resize with window function
+  // windowresize author: https://github.com/jeromeetienne/threex.windowresize
+  var winResize	= new THREEx.WindowResize(renderer, camera);
 
   // Light settings
   var light = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -90,7 +97,11 @@
   //Render loop
   var render = function () {
     mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
-    requestAnimationFrame( render );
+
+    //Set maximum framerate
+    setTimeout( function() {
+      requestAnimationFrame( render );
+    }, 1000 / 15);
     renderer.render( scene, camera );
 };
 
