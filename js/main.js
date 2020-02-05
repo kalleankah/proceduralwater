@@ -15,7 +15,7 @@ document.body.appendChild( renderer.domElement );
 
 // canvas resize with window function
 // windowresize author: https://github.com/jeromeetienne/threex.windowresize
-var winResize	= new THREEx.WindowResize(renderer, camera);
+//var winResize	= new THREEx.WindowResize(renderer, camera);
 
 // Light settings
 var light = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -28,8 +28,8 @@ light.shadow.camera.far = 100;
 scene.add( light );
 
 //Camera helper
-var helper = new THREE.CameraHelper( light.shadow.camera );
-scene.add( helper );
+// var helper = new THREE.CameraHelper( light.shadow.camera );
+// scene.add( helper );
 
 // Scene construction
 // Room
@@ -57,20 +57,6 @@ scene.add( plane1 );
 scene.add( plane2 );
 scene.add( plane3 );
 scene.add( plane4 );
-
-// Create the water; geometry, material and mesh
-// var geo_water = new THREE.PlaneGeometry( 16, 16, 128, 128 );
-// var mat_water = new THREE.ShaderMaterial( {
-//   uniforms: {
-    // time: {
-    //   type: "f",
-    //   value: 0.0
-    // }
-//   },
-//   vertexShader: document.getElementById( 'vertexShader' ).textContent,
-//   fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-//   lights: true
-// } );
 
 var geo_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
 var mat_water = new THREE.ShaderMaterial( {
