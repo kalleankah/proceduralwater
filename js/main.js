@@ -27,10 +27,6 @@ renderer.shadowMapSoft = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild( renderer.domElement );
 
-// canvas resize with window function
-// windowresize author: https://github.com/jeromeetienne/threex.windowresize
-//var winResize	= new THREEx.WindowResize(renderer, camera);
-
 // Light settings
 var light = new THREE.PointLight( 0xffffff, 1, 100 );
 light.position.set( 0, 12, 0 );
