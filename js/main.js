@@ -74,39 +74,6 @@ scene.add( plane3 );
 scene.add( plane4 );
 
 var geometry_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
-// var mat_water = new THREE.ShaderMaterial( {
-//   uniforms:{
-//     time: { type: "f", value: 0.0 },
-//     lightPos: {type: "vec3", value: light.position},
-//     eyePos: {type: "vec3", value: camera.position}
-//   },
-//   vertexShader: document.getElementById( 'vertexShader' ).textContent,
-//   fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-// } );
-
-// var water = new THREE.Mesh( geometry_water, mat_water );
-// water.position.y = 1;
-// water.rotation.x = -Math.PI/2;
-// water.castShadow = true;
-// scene.add( water );
-
-// //Camera settings
-// camera.position.z = 8;
-// camera.position.y = 5.5;
-// camera.rotation.x = -Math.PI/6;
-
-// //Render loop
-// var render = function () {
-//   mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
-
-//   //Set maximum framerate
-//   setTimeout( function() {
-//     requestAnimationFrame( render );
-//   }, 1000 / 15);
-//   renderer.render( scene, camera );
-// };
-
-// render();
 
 // Using shader loader
 ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
@@ -131,6 +98,7 @@ ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
 
     //Render loop
     var render = function () {
+      // Give a new seed to the noise function
       material_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
 
       //Set maximum framerate

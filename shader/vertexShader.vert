@@ -185,24 +185,24 @@ vec2 cellular(vec3 P) {
 }
 
 //Shader code begins
-// varying vec2 noise;
-// uniform float time;
+uniform float time;
+varying vec2 noise;
+varying vec4 worldPos; //Must be accessible in fragment shader
 
-// vec3 newPos;
-// float speed = 2.0;
+float speed = 2.0;
 
 void main(){
-  // noise = 1.0 * cellular( position*0.25 + vec3( time*speed ) );
-  // noise += 0.5 * cellular( position*0.5 + vec3( time*speed ) );
-  // noise += 0.25 * cellular( position + vec3( time*speed ) );
-  // noise += 0.125 * cellular( position*2.0 + vec3( time*speed ) );
-  // noise += 0.0625 * cellular( position*4.0 + vec3( time*speed ) );
-  // noise += 0.03125 * cellular( position*8.0 + vec3( time*speed ) );
+  noise = 1.0 * cellular( position*0.25 + vec3( time*speed ) );
+  noise += 0.5 * cellular( position*0.5 + vec3( time*speed ) );
+  noise += 0.25 * cellular( position + vec3( time*speed ) );
+  noise += 0.125 * cellular( position*2.0 + vec3( time*speed ) );
+  noise += 0.0625 * cellular( position*4.0 + vec3( time*speed ) );
+  noise += 0.03125 * cellular( position*8.0 + vec3( time*speed ) );
   //noise += 0.015625 * cellular( position*16.0 + vec3( time*speed ) );
   //noise += 0.0078125 * cellular( position*32.0 + vec3( time*speed ) );
 
-  // newPos = position + normal * noise.x;
+  worldPos = modelMatrix * vec4((position + normal * noise.x), 1.0);
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * worldPos;
 
 }
