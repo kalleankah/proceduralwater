@@ -1,8 +1,23 @@
+function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) {
+  var vertex_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
+  vertex_loader.setResponseType('text');
+  vertex_loader.load(vertex_url, function (vertex_text) {
+    var fragment_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
+    fragment_loader.setResponseType('text');
+    fragment_loader.load(fragment_url, function (fragment_text) {
+      onLoad(vertex_text, fragment_text);
+    });
+  }, onProgress, onError);
+}
+
 var start = Date.now();
 
 // Set up scene and camera
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+camera.position.z = 8;
+camera.position.y = 5.5;
+camera.rotation.x = -Math.PI/6;
 
 // Set up renderer
 //var renderer = new THREE.WebGLRenderer({antialias: true});
@@ -58,37 +73,73 @@ scene.add( plane2 );
 scene.add( plane3 );
 scene.add( plane4 );
 
-var geo_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
-var mat_water = new THREE.ShaderMaterial( {
-  uniforms:{
-    time: { type: "f", value: 0.0 },
-    lightPos: {type: "vec3", value: light.position},
-    eyePos: {type: "vec3", value: camera.position}
-  },
-  vertexShader: document.getElementById( 'vertexShader' ).textContent,
-  fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-} );
+var geometry_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
+// var mat_water = new THREE.ShaderMaterial( {
+//   uniforms:{
+//     time: { type: "f", value: 0.0 },
+//     lightPos: {type: "vec3", value: light.position},
+//     eyePos: {type: "vec3", value: camera.position}
+//   },
+//   vertexShader: document.getElementById( 'vertexShader' ).textContent,
+//   fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+// } );
 
-var water = new THREE.Mesh( geo_water, mat_water );
-water.position.y = 1;
-water.rotation.x = -Math.PI/2;
-water.castShadow = true;
-scene.add( water );
+// var water = new THREE.Mesh( geometry_water, mat_water );
+// water.position.y = 1;
+// water.rotation.x = -Math.PI/2;
+// water.castShadow = true;
+// scene.add( water );
 
-//Camera settings
-camera.position.z = 8;
-camera.position.y = 5.5;
-camera.rotation.x = -Math.PI/6;
+// //Camera settings
+// camera.position.z = 8;
+// camera.position.y = 5.5;
+// camera.rotation.x = -Math.PI/6;
 
-//Render loop
-var render = function () {
-  mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+// //Render loop
+// var render = function () {
+//   mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
 
-  //Set maximum framerate
-  setTimeout( function() {
-    requestAnimationFrame( render );
-  }, 1000 / 15);
-  renderer.render( scene, camera );
-};
+//   //Set maximum framerate
+//   setTimeout( function() {
+//     requestAnimationFrame( render );
+//   }, 1000 / 15);
+//   renderer.render( scene, camera );
+// };
 
-render();
+// render();
+
+// Using shader loader
+ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
+  function (vertex, fragment) {
+    var material_water = new THREE.ShaderMaterial({
+
+      uniforms:{
+        time: { type: "f", value: 0.0 },
+        lightPos: {type: "vec3", value: light.position},
+        eyePos: {type: "vec3", value: camera.position},
+        time: {type: "f", value: 0.0 }
+      },
+      vertexShader: vertex,
+      fragmentShader: fragment
+    });
+
+    var water = new THREE.Mesh(geometry_water, material_water);
+    water.position.y = 1;
+    water.rotation.x = -Math.PI/2;
+    water.castShadow = true;
+    scene.add( water );
+
+    //Render loop
+    var render = function () {
+      mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+
+      //Set maximum framerate
+      setTimeout( function() {
+        requestAnimationFrame( render );
+      }, 1000 / 15);
+      renderer.render( scene, camera );
+    };
+
+    render();
+  }
+)
