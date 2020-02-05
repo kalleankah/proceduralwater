@@ -97,15 +97,26 @@ ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
     //Render loop
     var render = function () {
       // Give a new seed to the noise function
-      material_water.uniforms[ 'time' ].value = ( Date.now() - start );
+      material_water.uniforms['time'].value = ( Date.now()-start );
 
       //Set maximum framerate
       setTimeout( function() {
         requestAnimationFrame( render );
-      }, 1000 / 30);
+      }, 1000/30);
       renderer.render( scene, camera );
     };
 
     render();
   }
 )
+
+// Adjust viewport when resizing window
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize() {
+
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
