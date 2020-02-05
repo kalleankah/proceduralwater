@@ -21,7 +21,7 @@ camera.rotation.x = -Math.PI/6;
 // Set up renderer
 //var renderer = new THREE.WebGLRenderer({antialias: true});
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
+renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.shadowMap.enabled = true;
 renderer.shadowMapSoft = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
