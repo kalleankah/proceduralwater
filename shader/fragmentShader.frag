@@ -1,10 +1,9 @@
-uniform vec3 lightPos;
-uniform vec3 eyePos;
-
-// varying vec4 worldPos;
+varying float noise;
+varying float max_displacement;
 
 void main(){
 
-   gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+   float shade = (noise + max_displacement)/(max_displacement * 2.0);
+   gl_FragColor = vec4(shade, shade, shade, 1.0);
 
 }

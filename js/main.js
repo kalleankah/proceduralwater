@@ -1,3 +1,4 @@
+// The purpose of ShaderLoader is to enable loading local files as shaders
 function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) {
   var vertex_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
   vertex_loader.setResponseType('text');
@@ -9,8 +10,6 @@ function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) {
     });
   }, onProgress, onError);
 }
-
-var start = Date.now();
 
 // Set up scene and camera
 var scene = new THREE.Scene();
@@ -42,12 +41,7 @@ light.shadow.camera.near = 0.1;
 light.shadow.camera.far = 100;
 scene.add( light );
 
-//Camera helper
-// var helper = new THREE.CameraHelper( light.shadow.camera );
-// scene.add( helper );
-
 // Scene construction
-// Room
 var geo_plane_square = new THREE.PlaneGeometry( 16, 16, 1 );
 var geo_plane_wide = new THREE.PlaneGeometry( 16, 8, 1 );
 var mat_plane = new THREE.MeshPhongMaterial( { shininess: 30.0, side: THREE.DoubleSide} );
@@ -73,9 +67,8 @@ scene.add( plane2 );
 scene.add( plane3 );
 scene.add( plane4 );
 
-var geometry_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
 
-// Using shader loader
+// Load shader files
 ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
   function (vertex, fragment) {
     var material_water = new THREE.ShaderMaterial({
@@ -90,21 +83,26 @@ ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
       fragmentShader: fragment
     });
 
+    //Create and add the water mesh to the scene
+    var geometry_water = new THREE.PlaneGeometry( 16, 16, 256, 256 );
     var water = new THREE.Mesh(geometry_water, material_water);
     water.position.y = 1;
     water.rotation.x = -Math.PI/2;
     water.castShadow = true;
     scene.add( water );
 
+    //Initialize time
+    var start = Date.now();
+
     //Render loop
     var render = function () {
       // Give a new seed to the noise function
-      material_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+      material_water.uniforms[ 'time' ].value = ( Date.now() - start );
 
       //Set maximum framerate
       setTimeout( function() {
         requestAnimationFrame( render );
-      }, 1000 / 15);
+      }, 1000 / 30);
       renderer.render( scene, camera );
     };
 
