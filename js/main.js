@@ -131,7 +131,7 @@ ShaderLoader("shader/vertexShader.vert", "shader/fragmentShader.frag",
 
     //Render loop
     var render = function () {
-      mat_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+      material_water.uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
 
       //Set maximum framerate
       setTimeout( function() {
